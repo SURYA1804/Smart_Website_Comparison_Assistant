@@ -153,7 +153,6 @@ rtree==1.4.1
 safetensors==0.7.0
 scikit-learn==1.7.2
 scipy==1.16.3
-selenium==4.39.0
 sentence-transformers==5.1.2
 setuptools==80.9.0
 shapely==2.1.2
