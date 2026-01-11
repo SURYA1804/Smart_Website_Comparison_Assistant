@@ -9,11 +9,42 @@ import sys
 import time
 from datetime import datetime
 from enum import Enum
+import subprocess
+import os
+
+def install_playwright_browsers():
+    """Install Playwright browsers automatically on Streamlit Cloud"""
+    try:
+        # Check if browsers are already installed
+        result = subprocess.run(
+            ["playwright", "install", "--dry-run"],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        if "already installed" not in result.stdout and result.returncode != 0:
+            print("🚀 Installing Playwright browsers...")
+            subprocess.check_call([
+                sys.executable, "-m", "playwright", "install",
+                "--with-deps", "chromium"
+            ])
+            print("✅ Playwright browsers installed!")
+        else:
+            print("✅ Playwright browsers already installed")
+            
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️ Playwright install warning: {e}")
+    except Exception as e:
+        print(f"⚠️ Could not check Playwright: {e}")
 
 # ✅ Windows fix for Playwright + asyncio
 if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
+if "PLAYWRIGHT_INSTALLED" not in os.environ:
+    install_playwright_browsers()
+    os.environ["PLAYWRIGHT_INSTALLED"] = "true"
 # --------------------------
 # Console colors for debugging
 # --------------------------
